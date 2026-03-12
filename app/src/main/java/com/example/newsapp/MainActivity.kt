@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -95,6 +97,68 @@ fun NewsScreen() {
                 text = "Clima",
                 fontSize = 16.sp,
                 color = Color.Gray
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Seccion: Ultimas noticias
+        Text(
+            text = "Ultimas noticias",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Carrusel horizontal con LazyRow
+        val ultimasNoticias = listOf(
+            Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "febrero 08 - 2024"),
+            Noticia("Banarse en la piscina del desierto de Cleopatra", "febrero 10 - 2024"),
+            Noticia("Gigantes tecnologicos invierten en inteligencia artificial", "febrero 12 - 2024")
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(ultimasNoticias) { noticia ->
+                NoticiaDestacadaCard(noticia)
+            }
+        }
+    }
+}
+
+// Data class para las noticias
+data class Noticia(
+    val titulo: String,
+    val fecha: String
+)
+
+// Tarjeta destacada para el carrusel
+@Composable
+fun NoticiaDestacadaCard(noticia: Noticia) {
+    Box(
+        modifier = Modifier
+            .width(280.dp)
+            .height(180.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF6650a4)),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = noticia.titulo,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = noticia.fecha,
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 14.sp
             )
         }
     }
