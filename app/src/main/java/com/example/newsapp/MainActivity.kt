@@ -7,6 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -38,10 +41,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Data class para las noticias
+data class Noticia(
+    val titulo: String,
+    val fecha: String,
+    val colorImagen: Color = Color.LightGray
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen() {
     var textoBusqueda by remember { mutableStateOf("") }
+
+    val ultimasNoticias = listOf(
+        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "febrero 08 - 2024"),
+        Noticia("Banarse en la piscina del desierto de Cleopatra", "febrero 10 - 2024"),
+        Noticia("Gigantes tecnologicos invierten en inteligencia artificial", "febrero 12 - 2024")
+    )
+
+    val noticiasMundo = listOf(
+        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "", Color(0xFFBDBDBD)),
+        Noticia("Banarse en la piscina del desierto de Cleopatra", "", Color(0xFFD4A574)),
+        Noticia("Gigantes tecnologicos", "", Color(0xFF90CAF9)),
+        Noticia("El rover de Marte envia", "", Color(0xFFFF8A65))
+    )
 
     Column(
         modifier = Modifier
@@ -112,12 +135,6 @@ fun NewsScreen() {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Carrusel horizontal con LazyRow
-        val ultimasNoticias = listOf(
-            Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "febrero 08 - 2024"),
-            Noticia("Banarse en la piscina del desierto de Cleopatra", "febrero 10 - 2024"),
-            Noticia("Gigantes tecnologicos invierten en inteligencia artificial", "febrero 12 - 2024")
-        )
-
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -125,14 +142,30 @@ fun NewsScreen() {
                 NoticiaDestacadaCard(noticia)
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Seccion: Alrededor del mundo
+        Text(
+            text = "Alrededor del mundo",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Grid de 2 columnas con LazyVerticalGrid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(noticiasMundo) { noticia ->
+                NewsCard(noticia)
+            }
+        }
     }
 }
-
-// Data class para las noticias
-data class Noticia(
-    val titulo: String,
-    val fecha: String
-)
 
 // Tarjeta destacada para el carrusel
 @Composable
@@ -159,6 +192,33 @@ fun NoticiaDestacadaCard(noticia: Noticia) {
                 text = noticia.fecha,
                 color = Color.White.copy(alpha = 0.8f),
                 fontSize = 14.sp
+            )
+        }
+    }
+}
+
+// Tarjeta para el grid de noticias
+@Composable
+fun NewsCard(noticia: Noticia) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFFE0E0E0))
+    ) {
+        Column {
+            // Placeholder de imagen
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .background(noticia.colorImagen)
+            )
+            // Titulo de la noticia
+            Text(
+                text = noticia.titulo,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(12.dp)
             )
         }
     }
