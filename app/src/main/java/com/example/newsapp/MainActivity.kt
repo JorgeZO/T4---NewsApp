@@ -3,6 +3,7 @@ package com.example.newsapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +48,7 @@ class MainActivity : ComponentActivity() {
 data class Noticia(
     val titulo: String,
     val fecha: String,
-    val colorImagen: Color = Color.LightGray
+    val imagen: Int = 0 // ID del recurso drawable
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,11 +62,13 @@ fun NewsScreen() {
         Noticia("Gigantes tecnologicos invierten en inteligencia artificial", "febrero 12 - 2024")
     )
 
+    // Aqui van las noticias del grid con sus imagenes
+    // Cambia R.drawable.nombre por el nombre de tu imagen (sin extension)
     val noticiasMundo = listOf(
-        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "", Color(0xFFBDBDBD)),
-        Noticia("Banarse en la piscina del desierto de Cleopatra", "", Color(0xFFD4A574)),
-        Noticia("Gigantes tecnologicos", "", Color(0xFF90CAF9)),
-        Noticia("El rover de Marte envia", "", Color(0xFFFF8A65))
+        Noticia("El presidente de EE.UU. no muestra signos de arrepentimiento...", "", R.drawable.noticia1),
+        Noticia("Banarse en la piscina del desierto de Cleopatra", "", R.drawable.noticia2),
+        Noticia("Gigantes tecnologicos", "", R.drawable.noticia3),
+        Noticia("El rover de Marte envia", "", R.drawable.noticia4)
     )
 
     Column(
@@ -207,13 +212,17 @@ fun NewsCard(noticia: Noticia) {
             .background(Color(0xFFE0E0E0))
     ) {
         Column {
-            // Placeholder de imagen
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(noticia.colorImagen)
-            )
+            // Imagen de la noticia
+            if (noticia.imagen != 0) {
+                Image(
+                    painter = painterResource(id = noticia.imagen),
+                    contentDescription = noticia.titulo,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
             // Titulo de la noticia
             Text(
                 text = noticia.titulo,
